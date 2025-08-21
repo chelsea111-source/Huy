@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kausapin mo na ako</title>
+  <style>
+    :root { --gap: 14px; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      color: #fff;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    .card {
+      text-align: center;
+      padding: 28px 22px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      width: min(92vw, 520px);
+      position: relative;
+    }
+    h1 {
+      margin: 0 0 18px;
+      font-size: clamp(22px, 4.8vw, 34px);
+      line-height: 1.2;
+    }
+    p {
+      margin: 0 0 22px;
+      opacity: .9;
+    }
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--gap);
+      position: relative;
+      height: 56px; /* reserve space so layout doesn't jump */
+    }
+    button {
+      border: none;
+      padding: 12px 22px;
+      font-size: 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .08s ease, opacity .2s ease;
+    }
+    button:active { transform: scale(.98); }
+    .yes { background: #7CFF7C; color: #0a0a0a; font-weight: 700; }
+    .no  { background: #ff4d4d; color: #fff; position: absolute; }
+    .final {
+      font-size: clamp(26px, 6vw, 44px);
+      font-weight: 800;
+      margin: 6px 0 0;
+    }
+    .hint { font-size: 13px; opacity: .6; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 id="title">Huy ikaw — oo ikaw 😏</h1>
+    <p id="subtitle">Ready ka? hehe</p>
+
+    <div class="buttons" id="btns">
+      <button class="yes" id="yesBtn">Oo</button>
+      <button class="no" id="noBtn">Hindi</button>
+    </div>
+
+    <p class="hint" id="hint">Subukan mong pindutin yung “Hindi” 😜</p>
+  </div>
+
+  <script>
+    let step = 0;
+    const title = document.getElementById('title');
+    const subtitle = document.getElementById('subtitle');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const btns = document.getElementById('btns');
+    const hint = document.getElementById('hint');
+
+    function goNext() {
+      step++;
+      if (step === 1) {
+        title.textContent = 'Tapos?';
+        subtitle.textContent = 'Sige na, sagutin mo ulit.';
+      } else if (step === 2) {
+        title.textContent = 'Si Prince ka diba?';
+        subtitle.textContent = 'Aminin mo na 😆';
+      } else {
+        // Final step: show the message only
+        title.textContent = 'Kausapin mo na ako 🙂';
+        subtitle.textContent = '';
+        btns.style.display = 'none';
+        hint.style.display = 'none';
+      }
+    }
+
+    // Make the "Hindi" button run away
+    function moveNoButton() {
+      const padding = 20;
+      const maxX = btns.clientWidth  - noBtn.offsetWidth  - padding;
+      const maxY = btns.clientHeight - noBtn.offsetHeight - padding;
+
+      // If container too small (mobile), use window bounds instead
+      const useWindow = maxX < 20 || maxY < 20;
+
+      const x = useWindow
+        ? Math.max(10, Math.floor(Math.random() * (window.innerWidth - noBtn.offsetWidth - 20)))
+        : Math.max(0, Math.floor(Math.random() * Math.max(20, maxX)));
+
+      const y = useWindow
+        ? Math.max(10, Math.floor(Math.random() * (window.innerHeight - noBtn.offsetHeight - 20)))
+        : Math.max(0, Math.floor(Math.random() * Math.max(20, maxY)));
+
+      noBtn.style.left = x + 'px';
+      noBtn.style.top  = y + 'px';
+    }
+
+    yesBtn.addEventListener('click', goNext);
+    noBtn.addEventListener('mouseenter', moveNoButton);
+    // also dodge on click (just in case they catch it)
+    noBtn.addEventListener('click', moveNoButton);
+
+    // Initial playful nudge
+    moveNoButton();
+  </script>
+</body>
+</html>
